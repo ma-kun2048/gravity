@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>重力値取得ツール</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    input[type="text"] { width: 100%; padding: 8px; margin-bottom: 10px; }
+    button { padding: 8px 16px; cursor: pointer; }
+    .result { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>国土地理院重力値取得ツール</h2>
+    
+    <label for="mapsUrl">Google Maps URL:</label>
+    <input type="text" id="mapsUrl" placeholder="https://www.google.com/maps/.../@42.9793282,141.56053,15z">
+    
+    <button onclick="getGravity()">重力値を取得</button>
+    <button onclick="clearFields()">クリア</button>
+    <button onclick="window.open('https://www.google.co.jp/maps', '_blank')">Google Mapsを開く</button>
+
+    <div class="result" id="resultArea">
+      <p>重力値 (Gravity): <span id="resGravity">-</span></p>
+      <p>緯度 (Lat): <span id="resLat">-</span></p>
+      <p>経度 (Lon): <span id="resLon">-</span></p>
+      <p>標高 (H): <span id="resH">-</span></p>
+    </div>
+  </div>
+
+  <script>
+    async function getGravity() {
+      const url = document.getElementById('mapsUrl').value;
+      if (!url) {
+        alert('Google MapsのURLを入力してください。');
+        return;
+      }
+
+      // 正規表現で @緯度,経度, を抽出
+      const regex = /@([0-9.-]+),([0-9.-]+),/;
+      const match = url.match(regex);
+
+      if (!match) {
+        alert('URLから緯度経度を取得できません。');
+        return;
+      }
+
+      const lat = match[1];
+      const lon = match[2];
+
+      try {
+        // 同じドメイン内のVercel Serverless Function（/api/gravity）を呼び出す
+        // これによりCORSエラーを回避できる
+        const response = await fetch(`/api/gravity?lat=${lat}&lon=${lon}`);
+        const data = await response.json();
+
+        if (data && data.CalcResult) {
+          document.getElementById('resGravity').textContent = data.CalcResult.Gravity;
+          document.getElementById('resLat').textContent = data.CalcResult.Lat_deg;
+          document.getElementById('resLon').textContent = data.CalcResult.Lon_deg;
+          document.getElementById('resH').textContent = data.CalcResult.H;
+          alert('取得完了しました。');
+        } else {
+          alert('APIから正しいデータが返却されませんでした。');
+        }
+      } catch (error) {
+        alert('通信エラーが発生しました。');
+        console.error(error);
+      }
+    }
+
+    function clearFields() {
+      document.getElementById('mapsUrl').value = '';
+      document.getElementById('resGravity').textContent = '-';
+      document.getElementById('resLat').textContent = '-';
+      document.getElementById('resLon').textContent = '-';
+      document.getElementById('resH').textContent = '-';
+    }
+  </script>
+</body>
+</html>
