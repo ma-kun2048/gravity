@@ -10,6 +10,7 @@
     button { padding: 8px 16px; cursor: pointer; margin-right: 5px; margin-bottom: 10px; }
     .result { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
     .loading { color: #666; font-size: 0.9em; display: none; }
+    .warning-text { margin-top: 20px; font-size: 0.9em; color: #d9534f; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -21,6 +22,8 @@
     
     <button onclick="getGravityByAddress()">重力値を取得</button>
     <button onclick="clearFields()">クリア</button>
+    <!-- 追加したリンクボタン -->
+    <button onclick="window.open('https://vldb.gsi.go.jp/sokuchi/gsigra/calc/', '_blank')">国土地理院重力値検索サイト</button>
     
     <div id="statusMessage" class="loading">検索中...少々お待ちください</div>
 
@@ -31,10 +34,13 @@
       <p>経度 (Lon): <span id="resLon">-</span></p>
       <p>標高 (H): <span id="resH">-</span></p>
     </div>
+
+    <!-- 注意書きをコンテナの中に移動し、少しスタイルを当てました -->
+    <div class="warning-text">
+      <p>※重力値を取得を実行した後に、検索地点に表示される住所が市町村名のみの場合は、国土地理院の検索対象地点に所在地が入っていない場合があります。その際は重力値にずれが生じる恐れがあります。</p>
+      <p>お手数ですが、国土地理院のウェブサイトで再確認してください。</p>
+    </div>
   </div>
-    <P>※重力値を取得を実行した後に、検索地点に表示される住所が市町村名のみの場合は、国土地理院の</P>
-    <p>検索対象地点に所在地が入っていない場合があります。その際は重力値にずれが生じる恐れがあります。</p>
-    <p>お手数ですが、国土地理院のウェブサイトで再確認してください。</p>
   
   <script>
     async function getGravityByAddress() {
