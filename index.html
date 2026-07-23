@@ -16,7 +16,7 @@
   <div class="container">
     <h2>国土地理院重力値取得ツール</h2>
     
-    <label for="addressInput">住所（または施設名）:</label>
+    <label for="addressInput">住所:</label>
     <input type="text" id="addressInput" placeholder="例: 北海道札幌市中央区北1条西2丁目">
     
     <button onclick="getGravityByAddress()">重力値を取得</button>
@@ -32,7 +32,10 @@
       <p>標高 (H): <span id="resH">-</span></p>
     </div>
   </div>
-
+    <P>※重力値を取得を実行した後に、検索地点に表示される住所が市町村名のみの場合は、国土地理院の</P>
+    <p>検索対象地点に所在地が入っていない場合があります。その際は重力値にずれが生じる恐れがあります。</p>
+    <p>お手数ですが、国土地理院のウェブサイトで再確認してください。</p>
+  
   <script>
     async function getGravityByAddress() {
       const address = document.getElementById('addressInput').value;
